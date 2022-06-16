@@ -1,5 +1,6 @@
-from square import *
 from colours import *
+from face import *
+from square import *
 
 import pygame
 import numpy as np
@@ -8,7 +9,9 @@ from math import *
 pygame.display.set_caption("3D projection in pygame!")
 window = pygame.display.set_mode((WIDTH*2, HEIGHT*2))
 
-angle = 0.05
+SIZE = 3
+
+angle = 0.01
 
 camera = np.matrix([0.5, 0.5, -10])
 
@@ -54,15 +57,10 @@ n_rotation_y = np.matrix([
     [-sin(-angle), 0, cos(-angle)],
 ])
 
-
 faces = []
 
-faces.append(Square([0, 2, 6, 4], points, RED, camera))
-faces.append(Square([0, 1, 3, 2], points, BLUE, camera))
-faces.append(Square([1, 3, 7, 5], points, ORANGE, camera))
-faces.append(Square([4, 5, 7, 6], points, GREEN, camera))
-faces.append(Square([0, 1, 5, 4], points, YELLOW, camera))
-faces.append(Square([2, 3, 7, 6], points, WHITE, camera))
+faces.append(Face([np.matrix([1, 1, 1]), np.matrix([1, -1, 1]), np.matrix([-1, -1, 1]), np.matrix([-1, 1, 1])], RED, SIZE, camera))
+faces.append(Face([np.matrix([1, 1, -1]), np.matrix([1, -1, -1]), np.matrix([-1, -1, -1]), np.matrix([-1, 1, -1])], ORANGE, SIZE, camera))
 
 
 clock = pygame.time.Clock()
@@ -84,28 +82,16 @@ while True:
     faces.sort()
 
     for f in faces:
-        f.draw_shape(window)
+        f.draw_face(window)
+
+    if pygame.mouse.get_pressed()[0] == True:
+
+        """face.transform(rotation_x)
+        face.transform(rotation_y)"""
+
+        for f in faces:
+            f.transform(rotation_x, camera)
+            f.transform(rotation_y, camera)
+
 
     pygame.display.update()
-
-    if pygame.key.get_pressed()[pygame.K_UP]:
-        for i in range(len(points)):
-            points[i] = np.dot(rotation_x, points[i].reshape((3, 1)))
-
-    if pygame.key.get_pressed()[pygame.K_DOWN]:
-        for i in range(len(points)):
-            points[i] = np.dot(n_rotation_x, points[i].reshape((3, 1)))
-    
-    if pygame.key.get_pressed()[pygame.K_LEFT]:
-        for i in range(len(points)):
-            points[i] = np.dot(n_rotation_y, points[i].reshape((3, 1)))
-
-    if pygame.key.get_pressed()[pygame.K_RIGHT]:
-        for i in range(len(points)):
-            points[i] = np.dot(rotation_y, points[i].reshape((3, 1)))
-
-    for i in range(len(points)):
-        points[i] = points[i].reshape((1, 3))
-
-    for f in faces:
-            f.update(points, camera)

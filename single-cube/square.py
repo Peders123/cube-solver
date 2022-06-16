@@ -7,7 +7,7 @@ SCALE = 100
 HEIGHT = 300
 WIDTH = 400
 
-class Face:
+class Square:
 
     def __init__(self, indexes, c, colour, camera):
 
