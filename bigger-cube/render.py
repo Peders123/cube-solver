@@ -9,11 +9,11 @@ from math import *
 pygame.display.set_caption("3D projection in pygame!")
 window = pygame.display.set_mode((WIDTH*2, HEIGHT*2))
 
-SIZE = 3
+SIZE = 5
 
 angle = 0.01
 
-camera = np.matrix([0.5, 0.5, -10])
+camera = np.matrix([0.5, 0.5, -20])
 
 points = []
 
@@ -59,9 +59,12 @@ n_rotation_y = np.matrix([
 
 faces = []
 
-faces.append(Face([np.matrix([1, 1, 1]), np.matrix([1, -1, 1]), np.matrix([-1, -1, 1]), np.matrix([-1, 1, 1])], RED, SIZE, camera))
-faces.append(Face([np.matrix([1, 1, -1]), np.matrix([1, -1, -1]), np.matrix([-1, -1, -1]), np.matrix([-1, 1, -1])], ORANGE, SIZE, camera))
-
+faces.append(Face([np.matrix([1, 1, 1]), np.matrix([1, -1, 1]), np.matrix([-1, -1, 1]), np.matrix([-1, 1, 1])], RED, SIZE, camera, 0))
+faces.append(Face([np.matrix([1, 1, -1]), np.matrix([1, -1, -1]), np.matrix([-1, -1, -1]), np.matrix([-1, 1, -1])], ORANGE, SIZE, camera, 0))
+faces.append(Face([np.matrix([1, 1, 1]), np.matrix([1, 1, -1]), np.matrix([1, -1, -1]), np.matrix([1, -1, 1])], BLUE, SIZE, camera, 2))
+faces.append(Face([np.matrix([-1, 1, 1]), np.matrix([-1, 1, -1]), np.matrix([-1, -1, -1]), np.matrix([-1, -1, 1])], GREEN, SIZE, camera, 2))
+faces.append(Face([np.matrix([1, 1, 1]), np.matrix([1, 1, -1]), np.matrix([-1, 1, -1]), np.matrix([-1, 1, 1])], YELLOW, SIZE, camera, 1))
+faces.append(Face([np.matrix([1, -1, 1]), np.matrix([1, -1, -1]), np.matrix([-1, -1, -1]), np.matrix([-1, -1, 1])], WHITE, SIZE, camera, 1))
 
 clock = pygame.time.Clock()
 while True:
@@ -84,14 +87,10 @@ while True:
     for f in faces:
         f.draw_face(window)
 
-    if pygame.mouse.get_pressed()[0] == True:
+    pygame.display.update()
 
-        """face.transform(rotation_x)
-        face.transform(rotation_y)"""
+    if pygame.mouse.get_pressed()[0] == True:
 
         for f in faces:
             f.transform(rotation_x, camera)
             f.transform(rotation_y, camera)
-
-
-    pygame.display.update()
