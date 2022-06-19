@@ -11,21 +11,9 @@ window = pygame.display.set_mode((WIDTH*2, HEIGHT*2))
 
 SIZE = 5
 
-angle = 0.01
+angle = 0.05
 
-camera = np.matrix([0.5, 0.5, -20])
-
-points = []
-
-points.append(np.matrix([1, 1, 1]))
-points.append(np.matrix([1, 1, -1]))
-points.append(np.matrix([1, -1, 1]))
-points.append(np.matrix([1, -1, -1]))
-points.append(np.matrix([-1, 1, 1]))
-points.append(np.matrix([-1, 1, -1]))
-points.append(np.matrix([-1, -1, 1]))
-points.append(np.matrix([-1, -1, -1]))
-
+camera = np.matrix([0.5, 0.5, -10])
 
 rotation_z = np.matrix([
     [cos(angle), -sin(angle), 0],
@@ -93,4 +81,25 @@ while True:
 
         for f in faces:
             f.transform(rotation_x, camera)
+            f.transform(rotation_y, camera)
+
+
+    if pygame.key.get_pressed()[pygame.K_UP]:
+
+        for f in faces:
+            f.transform(rotation_x, camera)
+
+    if pygame.key.get_pressed()[pygame.K_DOWN]:
+
+        for f in faces:
+            f.transform(n_rotation_x, camera)
+    
+    if pygame.key.get_pressed()[pygame.K_LEFT]:
+
+        for f in faces:
+            f.transform(n_rotation_y, camera)
+
+    if pygame.key.get_pressed()[pygame.K_RIGHT]:
+
+        for f in faces:
             f.transform(rotation_y, camera)

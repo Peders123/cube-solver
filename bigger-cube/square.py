@@ -62,7 +62,7 @@ class Square:
             drawing_coordinates.append(coords)
 
         pygame.draw.polygon(window, self.colour, drawing_coordinates)
-        pygame.draw.polygon(window, BLACK, drawing_coordinates, 5)
+        pygame.draw.polygon(window, BLACK, drawing_coordinates, 3)
 
         """projected2d = np.dot(projection_matrix, self.center.reshape((3, 1)))
         coords = [int(projected2d[0][0] * SCALE) + WIDTH, int(projected2d[1][0] * SCALE) + HEIGHT]
