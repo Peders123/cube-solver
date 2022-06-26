@@ -72,8 +72,8 @@ while True:
 
     faces.sort()
 
-    for f in faces:
-        f.draw_face(window)
+    for i in range(3, len(faces)):
+        faces[i].draw_face(window)
 
     pygame.display.update()
 
