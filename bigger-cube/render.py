@@ -9,7 +9,7 @@ from math import *
 pygame.display.set_caption("3D projection in pygame!")
 window = pygame.display.set_mode((WIDTH*2, HEIGHT*2))
 
-SIZE = 5
+SIZE = 2
 
 angle = 0.05
 

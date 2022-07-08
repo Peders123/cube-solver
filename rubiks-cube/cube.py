@@ -1,78 +1,62 @@
-from face import Face
-
+from cubie import Cubie
 
 class Cube:
 
-    def __init__(self):
+    def __init__(self, dim):
 
-        self.sides = [Face('W'), Face('G'), Face('O'), Face('B'), Face('R'), Face('Y')]
+        self.dim = dim
+        self.state = []
+
+        self.make()
 
 
-    def __str__(self):
+    def __repr__(self):
 
         string = ""
-        string += "     --- \n"
-        string += "    |%s %s|\n" % (self.sides[5].state[0], self.sides[5].state[1])
-        string += "    |%s %s|\n" % (self.sides[5].state[2], self.sides[5].state[3])
-        string += " --- --- --- --- \n"
-        string += "|%s %s|%s %s|%s %s|%s %s|\n" % (self.sides[1].state[0], self.sides[1].state[1], \
-            self.sides[2].state[0], self.sides[2].state[1], \
-            self.sides[3].state[0], self.sides[3].state[1], \
-            self.sides[4].state[0], self.sides[4].state[1])
-        string += "|%s %s|%s %s|%s %s|%s %s|\n" % (self.sides[1].state[2], self.sides[1].state[3], \
-            self.sides[2].state[2], self.sides[2].state[3], \
-            self.sides[3].state[2], self.sides[3].state[3], \
-            self.sides[4].state[2], self.sides[4].state[3])
-        string += " --- --- --- --- \n"
-        string += "    |%s %s|\n" % (self.sides[0].state[0], self.sides[0].state[1])
-        string += "    |%s %s|\n" % (self.sides[0].state[2], self.sides[0].state[3])
-        string += "     --- "
-        
+
+        for x in self.state:
+            for i in range(self.dim):
+                for k in range(self.dim):
+                    string += str(x[(i * 2) + k])
+                string += "\n"
+            string += "\n"
 
         return string
 
     
-    def up(self, prime=False):
+    def make(self):
 
-        if not prime:
-            self.sides[5].rotate()
-            self.sides[1].state[0], self.sides[2].state[0], self.sides[3].state[0], self.sides[4].state[0] = \
-                self.sides[2].state[0], self.sides[3].state[0], self.sides[4].state[0], self.sides[1].state[0]
-            self.sides[1].state[1], self.sides[2].state[1], self.sides[3].state[1], self.sides[4].state[1] = \
-                self.sides[2].state[1], self.sides[3].state[1], self.sides[4].state[1], self.sides[1].state[1]
+        if self.dim % 2 == 1:
+            lower = -(self.dim // 2)
+            upper = (self.dim // 2)
         else:
-            self.sides[5].rotate(True)
-            self.sides[1].state[0], self.sides[2].state[0], self.sides[3].state[0], self.sides[4].state[0] = \
-                self.sides[4].state[0], self.sides[1].state[0], self.sides[2].state[0], self.sides[3].state[0]
-            self.sides[1].state[1], self.sides[2].state[1], self.sides[3].state[1], self.sides[4].state[1] = \
-                self.sides[4].state[1], self.sides[1].state[1], self.sides[2].state[1], self.sides[3].state[1]
+            lower = -((self.dim / 2) - 0.5)
+            upper = (self.dim / 2) - 0.5
+
+        i = lower
+
+        while i <= upper:
+            layer = []
+            j = lower
+            while j <= upper:
+                k = lower
+                while k <= upper:
+                    layer.append(Cubie(i, j, k))
+                    k += 1
+                j += 1
+            self.state.append(layer)
+            i += 1
 
 
-    def down(self, prime=False):
+    def draw_cube(self, window):
 
-        if not prime:
-            self.sides[0].rotate()
-            self.sides[1].state[2], self.sides[2].state[2], self.sides[3].state[2], self.sides[4].state[2] = \
-                 self.sides[4].state[2], self.sides[1].state[2], self.sides[2].state[2], self.sides[3].state[2]
-            self.sides[1].state[3], self.sides[2].state[3], self.sides[3].state[3], self.sides[4].state[3] = \
-                 self.sides[4].state[3], self.sides[1].state[3], self.sides[2].state[3], self.sides[3].state[3]
-        else:
-            self.sides[0].rotate(True)
-            self.sides[1].state[2], self.sides[2].state[2], self.sides[3].state[2], self.sides[4].state[2] = \
-                self.sides[2].state[2], self.sides[3].state[2], self.sides[4].state[2], self.sides[1].state[2]
-            self.sides[1].state[3], self.sides[2].state[3], self.sides[3].state[3], self.sides[4].state[3] = \
-                self.sides[2].state[3], self.sides[3].state[3], self.sides[4].state[3], self.sides[1].state[3]
+        for x in self.state:
+            for y in x:
+                y.draw_cubie(window)
 
 
-    def right(self, prime=False):
+    def rotate(self, rotation_matrix):
 
-        pass
-
-
-
-c = Cube()
-print(c)
-c.down()
-print(c)
-c.down(True)
-print(c)
+        for x in self.state:
+            for y in x:
+                y.rotate(rotation_matrix)
