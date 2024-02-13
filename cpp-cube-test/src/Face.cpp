@@ -3,10 +3,10 @@
 
 Face::Face(int axis, int magnitude) {
 
-    this->a.setElem(axis, 1, magnitude);
-    this->b.setElem(axis, 1, magnitude);
-    this->c.setElem(axis, 1, magnitude);
-    this->d.setElem(axis, 1, magnitude);
+    this->a(axis, 0) = magnitude;
+    this->b(axis, 0) = magnitude;
+    this->c(axis, 0) = magnitude;
+    this->d(axis, 0) = magnitude;
 
     this->corners[0] = &this->a;
     this->corners[1] = &this->b;
@@ -16,115 +16,97 @@ Face::Face(int axis, int magnitude) {
     std::vector<int> rows;
 
     switch (axis) {
-        case 1:
+        case 0:
+            rows.push_back(1);
             rows.push_back(2);
-            rows.push_back(3);
+            break;
+        case 1:
+            rows.push_back(0);
+            rows.push_back(2);
             break;
         case 2:
+            rows.push_back(0);
             rows.push_back(1);
-            rows.push_back(3);
-            break;
-        case 3:
-            rows.push_back(1);
-            rows.push_back(2);
             break;
         default:
             break;
     }
 
-    this->a.setElem(rows[0], 1, -1);
-    this->a.setElem(rows[1], 1, 1);
+    this->a(rows[0], 0) = -1;
+    this->a(rows[1], 0) = 1;
 
-    this->b.setElem(rows[0], 1, 1);
-    this->b.setElem(rows[1], 1, 1);
+    this->b(rows[0], 0) = 1;
+    this->b(rows[1], 0) = 1;
 
-    this->c.setElem(rows[0], 1, -1);
-    this->c.setElem(rows[1], 1, -1);
+    this->c(rows[0], 0) = -1;
+    this->c(rows[1], 0) = -1;
 
-    this->d.setElem(rows[0], 1, 1);
-    this->d.setElem(rows[1], 1, -1);
+    this->d(rows[0], 0) = 1;
+    this->d(rows[1], 0) = -1;
+
+    std::cout << this->a << "\n" << std::endl;
+    std::cout << this->b << "\n" << std::endl;
+    std::cout << this->c << "\n" << std::endl;
+    std::cout << this->d << "\n" << std::endl;
+
 }
 
 Face::~Face() {}
 
 void Face::update() {
 
-    float angle = 0.05;
+    double angle = 0.05;
 
-    Matrix<float> rotation_x(3, 3);
-    Matrix<float> rotation_y(3, 3);
+    ROTATION_MATRICES(angle)
 
-    rotation_x.setElem(1, 1, 1);
-    rotation_x.setElem(1, 2, 0);
-    rotation_x.setElem(1, 3, 0);
-    rotation_x.setElem(2, 1, 0);
-    rotation_x.setElem(2, 2, cos(angle));
-    rotation_x.setElem(2, 3, -sin(angle));
-    rotation_x.setElem(3, 1, 0);
-    rotation_x.setElem(3, 2, sin(angle));
-    rotation_x.setElem(3, 3, cos(angle));
+    this->a = rotation_matrix_x * this->a;
+    this->a = rotation_matrix_y * this->a;
 
-    rotation_y.setElem(1, 1, cos(-angle));
-    rotation_y.setElem(1, 2, 0);
-    rotation_y.setElem(1, 3, sin(-angle));
-    rotation_y.setElem(2, 1, 0);
-    rotation_y.setElem(2, 2, 1);
-    rotation_y.setElem(2, 3, 0);
-    rotation_y.setElem(3, 1, -sin(-angle));
-    rotation_y.setElem(3, 2, 0);
-    rotation_y.setElem(3, 3, cos(-angle));
+    this->b = rotation_matrix_x * this->b;
+    this->b = rotation_matrix_y * this->b;
 
-    this->a = rotation_x * this->a;
-    this->a = rotation_y * this->a;
-    this->b = rotation_x * this->b;
-    this->b = rotation_y * this->b;
-    this->c = rotation_x * this->c;
-    this->c = rotation_y * this->c;
-    this->d = rotation_x * this->d;
-    this->d = rotation_y * this->d;
+    this->c = rotation_matrix_x * this->c;
+    this->c = rotation_matrix_y * this->c;
+
+    this->d = rotation_matrix_x * this->d;
+    this->d = rotation_matrix_y * this->d;
 
 }
 
 void Face::draw() {
 
-    std::vector<Matrix<float>> drawing_coordinates;
+    std::vector<Eigen::Vector2i> vertices;
 
-    drawing_coordinates.push_back(Face::getDrawingCoords(this->a));
-    drawing_coordinates.push_back(Face::getDrawingCoords(this->b));
-    drawing_coordinates.push_back(Face::getDrawingCoords(this->c));
-    drawing_coordinates.push_back(Face::getDrawingCoords(this->d));
+    vertices.push_back(Face::getDrawingCoords(this->a));
+    vertices.push_back(Face::getDrawingCoords(this->b));
+    vertices.push_back(Face::getDrawingCoords(this->d));
+    vertices.push_back(Face::getDrawingCoords(this->c));
 
-    Matrix<float> poly[4];
-
-    poly[0] = drawing_coordinates[0];
-    poly[1] = drawing_coordinates[1];
-    poly[2] = drawing_coordinates[3];
-    poly[3] = drawing_coordinates[2];
-
-    fillPolygon(poly);
+    fillPolygon(vertices);
 
     SDL_SetRenderDrawColor(Engine::renderer, 0, 0, 0, 255);
-    SDL_RenderDrawLine(Engine::renderer, drawing_coordinates[0](1, 1), drawing_coordinates[0](1, 2), drawing_coordinates[1](1, 1), drawing_coordinates[1](1, 2));
-    SDL_RenderDrawLine(Engine::renderer, drawing_coordinates[1](1, 1), drawing_coordinates[1](1, 2), drawing_coordinates[3](1, 1), drawing_coordinates[3](1, 2));
-    SDL_RenderDrawLine(Engine::renderer, drawing_coordinates[0](1, 1), drawing_coordinates[0](1, 2), drawing_coordinates[2](1, 1), drawing_coordinates[2](1, 2));
-    SDL_RenderDrawLine(Engine::renderer, drawing_coordinates[2](1, 1), drawing_coordinates[2](1, 2), drawing_coordinates[3](1, 1), drawing_coordinates[3](1, 2));
+
+    SDL_RenderDrawLine(Engine::renderer, vertices[0](0, 0), vertices[0](1, 0), vertices[1](0, 0), vertices[1](1, 0));
+    SDL_RenderDrawLine(Engine::renderer, vertices[1](0, 0), vertices[1](1, 0), vertices[2](0, 0), vertices[2](1, 0));
+    SDL_RenderDrawLine(Engine::renderer, vertices[0](0, 0), vertices[0](1, 0), vertices[3](0, 0), vertices[3](1, 0));
+    SDL_RenderDrawLine(Engine::renderer, vertices[3](0, 0), vertices[3](1, 0), vertices[2](0, 0), vertices[2](1, 0));
+
     SDL_SetRenderDrawColor(Engine::renderer, 255, 255, 255, 255);
 
 }
 
-Matrix<float> Face::getDrawingCoords(Matrix<float> m) {
+Eigen::Vector2i Face::getDrawingCoords(Eigen::Vector3d v) {
 
-    Matrix<float> projection_matrix(2, 3);
+    Eigen::Matrix<double, 2, 3> projection_matrix {
+        {1, 0, 0},
+        {0, 1, 0},
+    };
 
-    projection_matrix.setElem(1, 1, 1);
-    projection_matrix.setElem(2, 2, 1);
+    Eigen::Vector2d projected_coords = projection_matrix * v;
+    Eigen::Vector2i coords;
 
-    Matrix<float> projected_coords = projection_matrix * m;
-
-    Matrix<float> coords(1, 2);
-
-    coords.setElem(1, 1, (int)((projected_coords(1, 1) * SCALE) + WIDTH / 2));
-    coords.setElem(1, 2, (int)((projected_coords(2, 1) * SCALE) + HEIGHT / 2));
+    coords(0, 0) = (int)((projected_coords(0, 0) * SCALE) + WIDTH / 2);
+    coords(1, 0) = (int)((projected_coords(1, 0) * SCALE) + HEIGHT / 2);
 
     return coords;
 

@@ -2,11 +2,11 @@
 
 Cube::Cube() {
 
-    this->faces.push_back(Face(1, -1));
+    this->faces.push_back(Face(0, -1));
     //this->faces.push_back(Face(1, 1));
-    this->faces.push_back(Face(2, -1));
+    this->faces.push_back(Face(1, -1));
     //this->faces.push_back(Face(2, 1));
-    this->faces.push_back(Face(3, -1));
+    this->faces.push_back(Face(2, -1));
     //this->faces.push_back(Face(3, 1));
 
 }
