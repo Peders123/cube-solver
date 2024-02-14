@@ -74,7 +74,6 @@ void fillPolygon(const std::vector<Eigen::Vector2i>& vertices) {
 
 void fillPixel(int pixelX, int pixelY) {
 
-    SDL_SetRenderDrawColor(Engine::renderer, 255, 0, 0, 255);
     SDL_RenderDrawPoint(Engine::renderer, pixelX, pixelY);
 
 }

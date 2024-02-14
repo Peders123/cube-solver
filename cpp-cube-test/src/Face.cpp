@@ -1,7 +1,11 @@
 #include "Face.hpp"
 
 
-Face::Face(int axis, int magnitude) {
+Face::Face(int axis, int magnitude) : Face(axis, magnitude, COLOUR{255, 255, 255}) {}
+
+Face::Face(int axis, int magnitude, COLOUR colour) {
+    
+    this->colour = colour;
 
     this->a(axis, 0) = magnitude;
     this->b(axis, 0) = magnitude;
@@ -44,11 +48,6 @@ Face::Face(int axis, int magnitude) {
     this->d(rows[0], 0) = 1;
     this->d(rows[1], 0) = -1;
 
-    std::cout << this->a << "\n" << std::endl;
-    std::cout << this->b << "\n" << std::endl;
-    std::cout << this->c << "\n" << std::endl;
-    std::cout << this->d << "\n" << std::endl;
-
 }
 
 Face::~Face() {}
@@ -82,6 +81,8 @@ void Face::draw() {
     vertices.push_back(Face::getDrawingCoords(this->d));
     vertices.push_back(Face::getDrawingCoords(this->c));
 
+    SDL_SetRenderDrawColor(Engine::renderer, this->colour.red, this->colour.green, this->colour.blue, 255);
+
     fillPolygon(vertices);
 
     SDL_SetRenderDrawColor(Engine::renderer, 0, 0, 0, 255);
@@ -109,5 +110,19 @@ Eigen::Vector2i Face::getDrawingCoords(Eigen::Vector3d v) {
     coords(1, 0) = (int)((projected_coords(1, 0) * SCALE) + HEIGHT / 2);
 
     return coords;
+
+}
+
+Eigen::Vector3d Face::getCentre() {
+
+    double total_x = this->a(0, 0) + this->b(0, 0) + this->c(0, 0) + this->d(0, 0);
+    double total_y = this->a(1, 0) + this->b(1, 0) + this->c(1, 0) + this->d(1, 0);
+    double total_z = this->a(2, 0) + this->b(2, 0) + this->c(2, 0) + this->d(2, 0);
+
+    Eigen::Vector3d centre;
+
+    centre << total_x / 4, total_y / 4, total_z / 4;
+
+    return centre;
 
 }

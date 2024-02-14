@@ -2,6 +2,7 @@
 
 SDL_Renderer *Engine::renderer = nullptr;
 SDL_Event Engine::event;
+Eigen::Vector3d *Engine::camera = nullptr;
 
 Engine::Engine() {
 
@@ -31,6 +32,12 @@ void Engine::init(const char *title, int width, int height, bool fullscreen) {
         if (renderer) {
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
             std::cout << "Renderer created!" << std::endl;
+        }
+
+        camera = new Eigen::Vector3d;
+        if (camera) {
+            *camera << 0, 0, -10;
+            std::cout << "Camera initialised!" << std::endl;
         }
 
         this->running = true;

@@ -3,8 +3,8 @@
 #include "Cubie.hpp"
 #include "Engine.hpp"
 #include "Face.hpp"
-#include "Matrix.hpp"
 
+#include "Eigen/Dense"
 #include "SDL2/SDL.h"
 
 #include <cmath>
@@ -24,6 +24,8 @@ class Cube {
         Cube();
         void update();
         void draw();
-        // static Matrix<float> getDrawingCoords(Matrix<float>);
+
+        static double calculateDistance(Eigen::Vector3d, Eigen::Vector3d);
+        static bool compareFaces(Face, Face);
 
 };
